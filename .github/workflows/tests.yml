@@ -20,9 +20,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: latest
     - uses: hashicorp/setup-terraform@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
