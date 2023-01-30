@@ -1,6 +1,6 @@
 import logging
-from subprocess import CalledProcessError
 import re
+from subprocess import CalledProcessError
 from typing import Callable, Dict
 
 import tenacity
@@ -67,6 +67,8 @@ def do_with_retryable_errors(
                     message = f"'{action_description}' failed with error matching '{pattern}', but this error was expected and warrants a retry. Further details: '{error_message}'\n"
                     logger.critical(message)
                     raise RetryableError(message)
-            raise FatalError(f"'{action_description}' failed with a fatal error, cmd='{e.cmd}', returncode='{e.returncode}', output={e.output}\n") from e
+            raise FatalError(
+                f"'{action_description}' failed with a fatal error, cmd='{e.cmd}', returncode='{e.returncode}', output={e.output}\n"
+            ) from e
 
     return do_with_retry(action_description, max_attempts, sleep_between_retries, _retryable_action)
