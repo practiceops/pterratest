@@ -1,27 +1,25 @@
+import functools
 import os
 import shutil
-import functools
 from dataclasses import dataclass, field, replace
-from typing import Dict, Optional, Callable
+from typing import Callable, Dict, Optional
 
 _DEFAULT_RETRYABLE_TERRAFORM_ERRORS: Dict[str, str] = {
     # Helm related terraform calls may fail when too many tests run in parallel. While the exact cause is unknown,
     # this is presumably due to all the network contention involved. Usually a retry resolves the issue.
     r".*read: connection reset by peer.*": "Failed to reach helm charts repository.",
-    r".*transport is closing.*":           "Failed to reach Kubernetes API.",
-
+    r".*transport is closing.*": "Failed to reach Kubernetes API.",
     # `terraform init` frequently fails in CI due to network issues accessing plugins. The reason is unknown, but
     # eventually these succeed after a few retries.
-    r".*unable to verify signature.*":                  "Failed to retrieve plugin due to transient network error.",
-    r".*unable to verify checksum.*":                   "Failed to retrieve plugin due to transient network error.",
-    r".*no provider exists with the given name.*":      "Failed to retrieve plugin due to transient network error.",
-    r".*registry service is unreachable.*":             "Failed to retrieve plugin due to transient network error.",
-    r".*Error installing provider.*":                   "Failed to retrieve plugin due to transient network error.",
+    r".*unable to verify signature.*": "Failed to retrieve plugin due to transient network error.",
+    r".*unable to verify checksum.*": "Failed to retrieve plugin due to transient network error.",
+    r".*no provider exists with the given name.*": "Failed to retrieve plugin due to transient network error.",
+    r".*registry service is unreachable.*": "Failed to retrieve plugin due to transient network error.",
+    r".*Error installing provider.*": "Failed to retrieve plugin due to transient network error.",
     r".*Failed to query available provider packages.*": "Failed to retrieve plugin due to transient network error.",
-    r".*timeout while waiting for plugin to start.*":   "Failed to retrieve plugin due to transient network error.",
-    r".*timed out waiting for server handshake.*":      "Failed to retrieve plugin due to transient network error.",
-    r"could not query provider registry for":           "Failed to retrieve plugin due to transient network error.",
-
+    r".*timeout while waiting for plugin to start.*": "Failed to retrieve plugin due to transient network error.",
+    r".*timed out waiting for server handshake.*": "Failed to retrieve plugin due to transient network error.",
+    r"could not query provider registry for": "Failed to retrieve plugin due to transient network error.",
     # Provider bugs where the data after apply is not propagated. This is usually an eventual consistency issue, so
     # retrying should self resolve it.
     # See https://github.com/terraform-providers/terraform-provider-aws/issues/12449 for an example.
@@ -51,4 +49,3 @@ class Options:
 def _with_default_retryable_errors(original_options: Options) -> Options:
     """This functions makes a copy of the Options object and returns an updated object with sensible defaults for retryable errors."""
     return replace(original_options, retryable_terraform_errors=_DEFAULT_RETRYABLE_TERRAFORM_ERRORS)
-
