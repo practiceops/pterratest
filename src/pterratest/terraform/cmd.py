@@ -1,11 +1,13 @@
-import subprocess
-import shlex
 import dataclasses
-from typing import List, Callable
-
-from pterratest.terraform.options import Options
+import logging
+import shlex
+import subprocess
+from typing import Callable, List
 
 from pterratest.retry import do_with_retryable_errors
+from pterratest.terraform.options import Options
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def _generate_command(options: Options, *args: str) -> Callable[[], str]:
@@ -20,11 +22,13 @@ def _generate_command(options: Options, *args: str) -> Callable[[], str]:
         )
         p.check_returncode()
         return p.stdout
+
     return _cmd
 
 
 def run_terraform_command(options: Options, *args: str) -> str:
     cmd = _generate_command(options, *args)
-    description = f"{options.terraform_binary} {args}"
-    return do_with_retryable_errors(description, options.retryable_terraform_errors, options.max_retries, options.time_between_retries, cmd)
-
+    action_description = " ".join([options.terraform_binary] + list(args))
+    return do_with_retryable_errors(
+        action_description, options.retryable_terraform_errors, options.max_retries, options.time_between_retries, cmd
+    )

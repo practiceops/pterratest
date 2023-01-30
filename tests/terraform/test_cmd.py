@@ -1,9 +1,12 @@
+import logging
 import os
 import re
 
+import pytest
+
 import pterratest.terraform as terraform
 
-import pytest
+LOGGER = logging.getLogger(__name__)
 
 
 def test_run_terraform_command(terraform_hello_world_example_dir):
@@ -11,4 +14,3 @@ def test_run_terraform_command(terraform_hello_world_example_dir):
     output = terraform.run_terraform_command(options, "init")
 
     assert re.search(r"Terraform has been successfully initialized!", output)
-

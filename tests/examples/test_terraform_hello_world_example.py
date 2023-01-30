@@ -10,4 +10,3 @@
 #         terraform.init_and_apply(opts)
 #         output = terraform.output(opts, "hello_world")
 #         assert output == "Hello, World!"
-
