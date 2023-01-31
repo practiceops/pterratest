@@ -21,6 +21,7 @@ boto3 = "^1.26.58"
 isort = "^5.10.1"
 pytest = "^7.2.1"
 pre-commit = "^3.0.2"
+pytest-xdist = "^3.1.0"
 
 [tool.black]
 line-length    = 120
@@ -28,7 +29,7 @@ target-version = ['py38']
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts    = ""
+addopts    = "-n auto"
 testpaths = ["tests"]
 
 log_cli       = true
