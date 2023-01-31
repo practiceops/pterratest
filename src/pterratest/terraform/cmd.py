@@ -5,7 +5,8 @@ import subprocess
 from typing import Callable, List
 
 from pterratest.retry import do_with_retryable_errors
-from pterratest.terraform.options import Options
+
+from .options import Options
 
 _LOGGER = logging.getLogger(__name__)
 
