@@ -2,7 +2,7 @@ import logging
 import os
 import shutil
 import tempfile
-from typing import List
+from typing import List, Optional
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,13 +21,17 @@ def copy_terraform_folder_to_dest(
     terraform_module_folder: str,
     dest_root_folder: str,
     *,
-    ignore_patterns: List[str] = _COPY_TERRAFORM_FOLDER_IGNORE_PATTERNS,
+    ignore_patterns: Optional[List[str]] = None,
     logger: logging.Logger = _LOGGER,
 ) -> str:
-    """Copies the given root folder to a new root folder and returns the path to the given terraform modules folder within the new root folder.
+    """Copies the given root folder to a new root folder and returns the path to the given terraform modules folder
+    within the new root folder.
 
     Ignores terraform files such as tfstate and tfvars.
     """
+    if ignore_patterns is None:
+        ignore_patterns = _COPY_TERRAFORM_FOLDER_IGNORE_PATTERNS
+
     logger.debug(f"copying terraform folder '{root_folder}' to '{dest_root_folder}'")
     shutil.copytree(
         root_folder,
@@ -39,5 +43,7 @@ def copy_terraform_folder_to_dest(
 
 
 def copy_terraform_folder_to_temp(root_folder: str, terraform_module_folder: str = "") -> str:
-    """Copies the given root folder to a new temporary root folder and returns the path to the given terraform modules folder within the new root folder."""
+    """Copies the given root folder to a new temporary root folder and returns the path to the given terraform modules
+    folder within the new root folder.
+    """
     return copy_terraform_folder_to_dest(root_folder, terraform_module_folder, tempfile.mkdtemp())

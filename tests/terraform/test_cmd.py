@@ -1,10 +1,8 @@
+# pylint: disable=missing-function-docstring
 import logging
-import os
 import re
 
-import pytest
-
-import pterratest.terraform as terraform
+from pterratest import terraform
 
 LOGGER = logging.getLogger(__name__)
 

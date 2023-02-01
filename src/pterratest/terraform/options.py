@@ -1,8 +1,7 @@
-import functools
 import os
 import shutil
 from dataclasses import dataclass, field, replace
-from typing import Callable, Dict, Optional
+from typing import Dict, Optional
 
 _DEFAULT_RETRYABLE_TERRAFORM_ERRORS: Dict[str, str] = {
     # Helm related terraform calls may fail when too many tests run in parallel. While the exact cause is unknown,
@@ -31,6 +30,8 @@ _TERRAFORM_PATH = shutil.which("terraform")
 
 @dataclass
 class Options:
+    """Options for running terraform commands."""
+
     terraform_binary: str = _TERRAFORM_PATH
     terraform_dir: str = field(default_factory=os.getcwd)
 
@@ -46,6 +47,13 @@ class Options:
         return _with_default_retryable_errors(cls(*args, **kwargs))
 
 
-def _with_default_retryable_errors(original_options: Options) -> Options:
-    """This functions makes a copy of the Options object and returns an updated object with sensible defaults for retryable errors."""
-    return replace(original_options, retryable_terraform_errors=_DEFAULT_RETRYABLE_TERRAFORM_ERRORS)
+def _with_default_retryable_errors(
+    original_options: Options, retryable_terraform_errors: Optional[Dict[str, str]] = None
+) -> Options:
+    """This functions makes a copy of the Options object and returns an updated object with sensible defaults for
+    retryable errors.
+    """
+    if retryable_terraform_errors is None:
+        retryable_terraform_errors = _DEFAULT_RETRYABLE_TERRAFORM_ERRORS
+
+    return replace(original_options, retryable_terraform_errors=retryable_terraform_errors)

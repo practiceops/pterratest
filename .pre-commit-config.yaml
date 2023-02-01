@@ -1,9 +1,10 @@
 ---
 repos:
   - repo: https://github.com/psf/black
-    rev: 22.12.0
+    rev: 23.1.0
     hooks:
       - id: black
+        args: [--config=pyproject.toml]
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
     hooks:
@@ -16,3 +17,13 @@ repos:
     rev: 1.7.0
     hooks:
       - id: yamlfix
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.6.0
+    hooks:
+      - id: pretty-format-toml
+        args: [--autofix]
+        exclude: poetry.lock
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.77.0
+    hooks:
+      - id: terraform_fmt

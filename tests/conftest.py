@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 import os
 import shutil
 
@@ -21,9 +22,9 @@ def examples_dir(test_dir) -> str:
 @pytest.fixture
 def examples_dir_temp(examples_dir) -> str:
     """Returns a temp dir path to a copy of the examples dir."""
-    d = copy_terraform_folder_to_temp(examples_dir)
-    yield d
-    shutil.rmtree(d)
+    temp_dir = copy_terraform_folder_to_temp(examples_dir)
+    yield temp_dir
+    shutil.rmtree(temp_dir)
 
 
 @pytest.fixture
