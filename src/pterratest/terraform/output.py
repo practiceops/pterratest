@@ -6,6 +6,10 @@ from .options import Options
 
 
 def output_json(options: Options, key: Optional[str] = None) -> str:
+    """Calls terraform output for the given variable and returns the result as the json string.
+
+    If key is None, it will return all the output variables.
+    """
     args = ["output", "-no-color", "-json"]
     if key is not None:
         args.append(key)
